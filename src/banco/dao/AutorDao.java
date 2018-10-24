@@ -8,10 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import banco.modelo.Cliente;
-import banco.modelo.Conta;
+import banco.modelo.Livro;
+import banco.modelo.Autor;
 
-public class ContaDao implements Dao<Conta> {
+public class AutorDao implements Dao<Autor> {
 	
 	private static final String GET_BY_ID = "SELECT * FROM conta NATURAL JOIN cliente WHERE id = ?";
 	private static final String GET_ALL = "SELECT * FROM conta NATURAL JOIN cliente";
@@ -21,7 +21,7 @@ public class ContaDao implements Dao<Conta> {
 			+ "saldo = ? WHERE id = ?";
 	private static final String DELETE = "DELETE FROM conta WHERE id = ?";
 	
-	public ContaDao() {
+	public AutorDao() {
 		try {
 			createTable();
 		} catch (SQLException e) {
@@ -46,28 +46,28 @@ public class ContaDao implements Dao<Conta> {
 	}
 	
 	
-	private Conta getContaFromRS(ResultSet rs) throws SQLException
+	private Autor getContaFromRS(ResultSet rs) throws SQLException
     {
-		Conta conta = new Conta();
+		Autor conta = new Autor();
 			
 		conta.setId( rs.getInt("id") );
 		conta.setAgencia( rs.getInt("agencia") );
 		conta.setNumero( rs.getInt("numero"));
 		conta.setSaldo( rs.getDouble("saldo") );
-		conta.setCliente( new Cliente(rs.getInt("cliente_id"), rs.getString("nome"), 
+		conta.setCliente( new Livro(rs.getInt("cliente_id"), rs.getString("nome"), 
 				rs.getString("endereco"), rs.getLong("cpf"),  rs.getLong("rg"),
-				rs.getLong("telefone"), rs.getDouble("renda_mensal")) );
+				rs.getLong("telefone")));
 	
 		return conta;
     }
 	
 	@Override
-	public Conta getByKey(int id) {
+	public Autor getByKey(int id) {
 		Connection conn = DbConnection.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
-		Conta conta = null;
+		Autor conta = null;
 		
 		try {
 			stmt = conn.prepareStatement(GET_BY_ID);
@@ -87,12 +87,12 @@ public class ContaDao implements Dao<Conta> {
 	}
 
 	@Override
-	public List<Conta> getAll() {
+	public List<Autor> getAll() {
 		Connection conn = DbConnection.getConnection();
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		List<Conta> conta = new ArrayList<>();
+		List<Autor> conta = new ArrayList<>();
 		
 		try {
 			stmt = conn.createStatement();
@@ -113,7 +113,7 @@ public class ContaDao implements Dao<Conta> {
 	}
 
 	@Override
-	public void insert(Conta conta) {
+	public void insert(Autor conta) {
 		Connection conn = DbConnection.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -159,7 +159,7 @@ public class ContaDao implements Dao<Conta> {
 	}
 
 	@Override
-	public void update(Conta conta) {
+	public void update(Autor conta) {
 		Connection conn = DbConnection.getConnection();
 		
 		PreparedStatement stmt = null;

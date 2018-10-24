@@ -8,19 +8,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import banco.modelo.Cliente;
+import banco.modelo.Livro;
 
-public class ClienteDao implements Dao<Cliente> {
+public class LivroDao implements Dao<Livro> {
 	
-	private static final String GET_BY_ID = "SELECT * FROM cliente WHERE id = ?";
-	private static final String GET_ALL = "SELECT * FROM cliente";
-	private static final String INSERT = "INSERT INTO cliente (nome, rg, cpf, endereco, telefone, renda_mensal) "
+	private static final String GET_BY_ID = "SELECT * FROM livro WHERE id = ?";
+	private static final String GET_ALL = "SELECT * FROM livro";
+	private static final String INSERT = "INSERT INTO livro (nome, rg, cpf, endereco, telefone) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String UPDATE = "UPDATE cliente SET nome = ?, rg = ?, cpf = ?, "
-			+ "endereco = ?, telefone = ?, renda_mensal = ? WHERE id = ?";
-	private static final String DELETE = "DELETE FROM cliente WHERE id = ?";
+	private static final String UPDATE = "UPDATE livro SET nome = ?, rg = ?, cpf = ?, "
+			+ "endereco = ?, telefone = ? WHERE id = ?";
+	private static final String DELETE = "DELETE FROM livro WHERE id = ?";
 	
-	public ClienteDao() {
+	public LivroDao() {
 		try {
 			createTable();
 		} catch (SQLException e) {
@@ -30,14 +30,13 @@ public class ClienteDao implements Dao<Cliente> {
 	}
 	
 	private void createTable() throws SQLException {
-	    String sqlCreate = "CREATE TABLE IF NOT EXISTS cliente"
+	    String sqlCreate = "CREATE TABLE IF NOT EXISTS livro"
 	            + "  (id           INTEGER,"
 	            + "   nome            VARCHAR(50),"
 	            + "   rg	          BIGINT,"
 	            + "   cpf			  BIGINT,"
 	            + "   endereco           VARCHAR(255),"
 	            + "   telefone           BIGINT,"
-	            + "   renda_mensal       DOUBLE,"
 	            + "   PRIMARY KEY (id))";
 	    
 	    Connection conn = DbConnection.getConnection();
@@ -50,26 +49,25 @@ public class ClienteDao implements Dao<Cliente> {
 	}
 	
 	
-	private Cliente getClienteFromRS(ResultSet rs) throws SQLException
+	private Livro getClienteFromRS(ResultSet rs) throws SQLException
     {
-		Cliente cliente = new Cliente();
+		Livro livro = new Livro();
 			
-		cliente.setId( rs.getInt("id") );
-		cliente.setNome( rs.getString("nome") );
-		cliente.setRg( rs.getLong("rg") );
-		cliente.setCpf( rs.getLong("cpf") );
-		cliente.setEndereco( rs.getString("endereco") );
-		cliente.setTelefone( rs.getLong("telefone") );
-		cliente.setRendaMensal( rs.getDouble("renda_mensal") );
+		livro.setId( rs.getInt("id") );
+		livro.setNome( rs.getString("nome") );
+		livro.setRg( rs.getLong("rg") );
+		livro.setCpf( rs.getLong("cpf") );
+		livro.setEndereco( rs.getString("endereco") );
+		livro.setTelefone( rs.getLong("telefone") );
 	
-		return cliente;
+		return livro;
     }
 	
 	@Override
-	public Cliente getByKey(int id) {
+	public Livro getByKey(int id) {
 		Connection conn = DbConnection.getConnection();
 		
-		Cliente cliente = null;
+		Livro cliente = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
@@ -82,7 +80,7 @@ public class ClienteDao implements Dao<Cliente> {
 				cliente = getClienteFromRS(rs);
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("Erro ao obter cliente pela chave.", e);
+			throw new RuntimeException("Erro ao obter livro pela chave.", e);
 		} finally {
 			close(conn, stmt, rs);
 		}
@@ -91,10 +89,10 @@ public class ClienteDao implements Dao<Cliente> {
 	}
 
 	@Override
-	public List<Cliente> getAll() {
+	public List<Livro> getAll() {
 		Connection conn = DbConnection.getConnection();
 		
-		List<Cliente> clientes = new ArrayList<>();
+		List<Livro> clientes = new ArrayList<>();
 		Statement stmt = null;
 		ResultSet rs = null;
 		
@@ -108,7 +106,7 @@ public class ClienteDao implements Dao<Cliente> {
 			}			
 			
 		} catch (SQLException e) {
-			throw new RuntimeException("Erro ao obter todos os clientes.", e);
+			throw new RuntimeException("Erro ao obter todos os livros.", e);
 		} finally {
 			close(conn, stmt, rs);
 		}
@@ -117,7 +115,7 @@ public class ClienteDao implements Dao<Cliente> {
 	}
 
 	@Override
-	public void insert(Cliente cliente) {
+	public void insert(Livro cliente) {
 		Connection conn = DbConnection.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -129,7 +127,6 @@ public class ClienteDao implements Dao<Cliente> {
 			stmt.setLong(3, cliente.getCpf());
 			stmt.setString(4, cliente.getEndereco());
 			stmt.setLong(5, cliente.getTelefone());
-			stmt.setDouble(6, cliente.getRendaMensal());
 			
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
@@ -138,7 +135,7 @@ public class ClienteDao implements Dao<Cliente> {
 				cliente.setId(rs.getInt(1));
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("Erro ao inserir cliente.", e);
+			throw new RuntimeException("Erro ao inserir livro.", e);
 		}finally {
 			close(conn, stmt, rs);
 		}
@@ -157,31 +154,30 @@ public class ClienteDao implements Dao<Cliente> {
 			
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new RuntimeException("Erro ao remover cliente.", e);
+			throw new RuntimeException("Erro ao remover livro.", e);
 		} finally {
 			close(conn, stmt, null);
 		}
 	}
 
 	@Override
-	public void update(Cliente cliente) {
+	public void update(Livro livro) {
 		Connection conn = DbConnection.getConnection();
 		PreparedStatement stmt = null;
 		
 		try {
 			stmt = conn.prepareStatement(UPDATE);
-			stmt.setString(1, cliente.getNome());
-			stmt.setLong(2, cliente.getRg());
-			stmt.setLong(3, cliente.getCpf());
-			stmt.setString(4, cliente.getEndereco());
-			stmt.setLong(5, cliente.getTelefone());
-			stmt.setDouble(6, cliente.getRendaMensal());
-			stmt.setInt(7, cliente.getId());
+			stmt.setString(1, livro.getNome());
+			stmt.setLong(2, livro.getRg());
+			stmt.setLong(3, livro.getCpf());
+			stmt.setString(4, livro.getEndereco());
+			stmt.setLong(5, livro.getTelefone());
+			stmt.setInt(7, livro.getId());
 			
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			throw new RuntimeException("Erro ao atualizar cliente.", e);
+			throw new RuntimeException("Erro ao atualizar livro.", e);
 		} finally {
 			close(conn, stmt, null);
 		}

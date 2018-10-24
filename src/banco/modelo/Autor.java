@@ -1,16 +1,16 @@
 package banco.modelo;
 
 
-public class Conta implements Imprimivel {
+public class Autor implements Imprimivel {
 	private int id;
 	private int agencia;
 	private int numero;
-	private Cliente cliente;
+	private Livro cliente;
 	private double saldo;
 	
-	public Conta() { }
+	public Autor() { }
 	
-	public Conta(int id, int agencia, int numero, Cliente cliente, double saldo) {
+	public Autor(int id, int agencia, int numero, Livro cliente, double saldo) {
 		this.id = id;
 		this.agencia = agencia;
 		this.numero = numero;
@@ -50,11 +50,11 @@ public class Conta implements Imprimivel {
 		this.numero = numero;
 	}
 	
-	public Cliente getCliente() {
+	public Livro getCliente() {
 		return cliente;
 	}
 	
-	public void setCliente(Cliente cliente) {
+	public void setCliente(Livro cliente) {
 		this.cliente = cliente;
 	}
 
